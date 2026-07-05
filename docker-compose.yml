@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16
+
+    container_name: trace-db
+
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev123
+      POSTGRES_DB: traceability
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - trace-db-data:/var/lib/postgresql/data
+
+volumes:
+  trace-db-data:

@@ -1,3 +1,14 @@
 spring:
   application:
     name: traceability
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/traceability
+    username: dev
+    password: dev123
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+

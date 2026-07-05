@@ -73,18 +73,45 @@ Do not execute it. I am hand-building every step; use it to check my work when a
 
 ---
 
-## Database — three core tables + locations lookup
+## Database — six tables: three lookups, one current-state, two append-only
 
-- `locations` (location_id PK, name, zone)
-- `components` (component_id PK, part_number, name, quantity, location_id FK, status,
+**Lookup tables** (small, referenced by ID):
+- `locations` (location_id PK, name NOT NULL UNIQUE, zone)
+- `operators` (operator_id PK, full_name NOT NULL, employee_no UNIQUE, created_at)
+  — the users who record movements and quality checks
+- `failure_codes` (failure_code_id PK, code NOT NULL UNIQUE e.g. `DAMAGED`/`EXPIRED`,
+  description) — reasons a component is scrapped
+
+**Current state:**
+- `components` (component_id PK, part_number NOT NULL, name NOT NULL,
+  quantity NOT NULL CHECK ≥ 0, location_id FK→locations NOT NULL, status NOT NULL,
   created_at, updated_at)
-- `movement_history` (movement_id PK, component_id FK, from_location_id FK,
-  to_location_id FK, quantity_moved, moved_by, moved_at, notes)  — append-only
-- `status_checks` (check_id PK, component_id FK, status, checked_by, checked_at, notes)
+
+**Append-only history:**
+- `movement_history` (movement_id PK, component_id FK→components NOT NULL,
+  from_location_id FK→locations NULLABLE, to_location_id FK→locations NOT NULL,
+  quantity_moved NOT NULL CHECK > 0, moved_by FK→operators, moved_at, notes)
+- `status_checks` (check_id PK, component_id FK→components NOT NULL, status NOT NULL,
+  failure_code_id FK→failure_codes NULLABLE — set only when status = REJECTED,
+  checked_by FK→operators, checked_at, notes)
+
+**Relationships:**
+- Every `component` sits at one `location`.
+- Each `movement_history` row = one component moving between locations, by one operator.
+- Each `status_checks` row = one quality assessment by one operator; a rejection points
+  at the `failure_code` explaining why.
+- "Quantity scrapped under each failure code" = sum over `status_checks` joined to
+  `failure_codes`, grouped by code.
+
+**Design notes:**
+- `moved_by` / `checked_by` are FKs to `operators` (normalized "who", like locations).
+- A scrap is a `status_checks` row with status = REJECTED and a `failure_code_id` — no
+  separate scrap table.
 
 Indexes: `idx_movement_component (component_id, moved_at DESC)`,
 `idx_status_component (component_id, checked_at DESC)`,
-`idx_components_part (part_number)`.
+`idx_components_part (part_number)`,
+`idx_status_failure (failure_code_id)`.
 
 ## REST API (target shape)
 
