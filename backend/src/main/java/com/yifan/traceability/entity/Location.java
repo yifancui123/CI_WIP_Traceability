@@ -1,23 +1,35 @@
-/*
-* - Class annotations: @Entity, @Table(name = "locations"), and Lombok's @Getter, @Setter, @NoArgsConstructor.
-- Three fields:
-  - locationId — Long, annotated @Id and @GeneratedValue(strategy = GenerationType.IDENTITY) (matches BIGSERIAL).
-  - name — String.
-  - zone — String.
+package com.yifan.traceability.entity;
 
-Reminders:
-- BIGSERIAL/BIGINT → Long, VARCHAR → String.
-- camelCase → snake_case is automatic (locationId → location_id), so @Column is optional here; add @Column(name = "location_id") on the id if you want it explicit.
-- The imports come from jakarta.persistence.* (for @Entity, @Id, etc.) and lombok.* — IntelliJ will offer to auto-import as you type the annotations.
-*/
+import jakarta.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+
+@Entity // table
+@Table(name = "locations")   // maps to the plural table name
+@Getter                      // Lombok generates all getters
+@Setter                      // Lombok generates all setters
+@NoArgsConstructor           // Lombok generates the no-arg constructor JPA needs
 public class Location {
 
-    private long locationID;
-    private string locationName;
-    private string zoneName;
+    @Id // columns
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long locationId; // locationId → column location_id
 
-    public Location(long id, string name, string zone){
+    // → column name, zone
+    private String name;
+    private String zone;
+}
+
+    /*
+    public Location(long id, string name, String zone){}
+
+    public Location(long id, string name, String zone){
         locationID = id;
         locationName = name;
         zoneName = zone;
@@ -46,4 +58,4 @@ public class Location {
     public void setZoneName(string zoneName) {
         this.zoneName = zoneName;
     }
-}
+    */
