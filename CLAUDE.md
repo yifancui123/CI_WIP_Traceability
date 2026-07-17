@@ -173,15 +173,37 @@ Detail/timeline, Record Movement, Register + Status Check forms. State with
 - Phase 5 — integration & hardening, seed data
 - Phase 6 — analytics dashboard (optional)
 - Phase 7 — testing & deployment
-- Phase 8 — AI assistant (optional, after core app works)
+- Phase 8 — AI foundations (warm-up: get ready for LLM/agent development)
+- Phase 9 — AI assistant (optional, after core app works)
 
-Current position: Phase 1 (environment). Next: write docker-compose.yml by hand,
-bring up Postgres in Docker, verify with `docker exec trace-db pg_isready`, then
-Phase 2 schema (V1__init.sql).
+Current position: Phase 3 (backend). Phases 0–2 done (repo, Dockerized Postgres 16,
+8-table schema applied & verified). Working through JPA entities one per table —
+`Location` done and committed; next up is `Part`.
 
 ---
 
-## Phase 8 — AI assistant (optional, after core app works)
+## Phase 8 — AI foundations (get ready for AI agent development)
+
+A short warm-up (~a few days) done right after the core app works and **before** building
+the AI assistant, so the SDK / tool-use / agent concepts read as concrete steps instead of
+jargon. Same just-in-time principle as the rest of the project — learn it right before
+using it. I have zero LLM background, so this builds the mental model first.
+
+1. **Read one high-level explainer on how LLMs work** — the mental model, not the maths;
+   what an LLM call is and isn't.
+2. **First raw LLM call from Postman** — get an API key, no code, just watch the
+   request/response JSON go in and out, exactly like testing a REST endpoint.
+3. **Same call from a tiny standalone Java program** — confirm it works from Java before
+   touching the backend.
+4. **Read the "tool use" API page and do one tool-calling round trip by hand** — the model
+   requests a tool, I return a result. This is the basis of the chat assistant and operator
+   agent (Tiers 2 and 3).
+
+Outcome: every task in Phase 9 (and in `PLAN.md`) reads as concrete instructions.
+
+---
+
+## Phase 9 — AI assistant (optional, after core app works)
 
 Uses the official Anthropic Java SDK (`com.anthropic:anthropic-java`); default model
 `claude-opus-4-8`, API key from the `ANTHROPIC_API_KEY` env var (never hardcoded, never
