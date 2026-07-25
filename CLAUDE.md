@@ -1,8 +1,12 @@
 # Component Traceability System
 
-A digital traceability system for a manufacturing workflow. Tracks components as they
-move through production — recording their locations, statuses, and full movement
-history over time — with an optional analytics dashboard for manufacturing decisions.
+A work-in-progress (WIP) traceability system for **Cochlear Implant (CI)** manufacturing.
+Tracks CIs as they move through production operations — recording quantities ready at each
+operation, quantities moved on, and changes from scrap or hold — with an LLM integrated for
+daily summaries, chat, and an approval-gated operator agent.
+
+Domain terms: **part number** = a kind of CI serial; **job** = a batch of that serial;
+**component** = a physical unit (component ID); **location** = a production **operation**.
 
 This is a first-time learning project. The point is to build the skills, not just ship
 the artifact. Read the working mode below before doing anything.
@@ -70,6 +74,19 @@ Do not execute it. I am hand-building every step; use it to check my work when a
 - **Status vocabulary (enum):** IN_STOCK, IN_TRANSIT, IN_PRODUCTION, QUALITY_HOLD,
   PASSED, REJECTED, SHIPPED.
 - Flyway owns the schema; JPA `ddl-auto: validate`.
+
+**Movement guard rules** (enforced in the `recordMovement` service, Phase 3):
+- Reject any movement that would make a component's quantity negative (stop + warn).
+- Reject duplicate movements.
+- Non-conforming components (scrapped / on hold) cannot move further through the flow —
+  they can only be scrapped; their full record is always kept (never hard-deleted).
+- Scrap subtracts quantity but preserves the component's complete history.
+
+**Terminology:** a `location` represents a production **operation**.
+
+**Planned, not built yet:** a `production_plan` / target table to power the "unmet
+production plans" and serial-prioritisation detectors in the daily summary. Kept in the
+design as future scope — the other detectors (quality, anomaly) work without it.
 
 ---
 
