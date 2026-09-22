@@ -22,6 +22,6 @@ public class Part {
     private Long partId;
 
     private String partNumber;
-    private String partName;
-    private String partUnit;
+    private String name;
+    private String unit;
 }

@@ -22,8 +22,8 @@ public class Location {
     private Long locationId; // locationId → column location_id
 
     // → column name, zone
-    private String locationName;
-    private String locationZone;
+    private String name;
+    private String zone;
 }
 
     /*

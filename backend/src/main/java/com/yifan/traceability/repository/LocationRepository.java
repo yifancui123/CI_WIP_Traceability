@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
-    Location findByLocationName(String locationName);
-    List <Location> findByLocationZone(String locationZone);
+    Location findByName(String name);
+    List<Location> findByZone(String zone);
 }
